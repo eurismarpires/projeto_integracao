@@ -2,16 +2,7 @@ package com.eurismar.clientgcmintegracao;
 
 import java.io.IOException;
 
-import com.example.clientgcmintegracao.R;
-import com.example.clientgcmintegracao.R.id;
-import com.example.clientgcmintegracao.R.layout;
-import com.example.clientgcmintegracao.R.menu;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -29,7 +20,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.os.Build;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class RegistrarActivity extends Activity {
 	public static final String EXTRA_MESSAGE = "message";
@@ -42,6 +36,7 @@ public class RegistrarActivity extends Activity {
 	Context context;
 	GoogleCloudMessaging gcm;
 	String regid;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,14 +66,17 @@ public class RegistrarActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.menuPrincipal) {
-			Intent intent = new Intent(this,MainActivity.class);
-			startActivity(intent);			
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
 			return true;
 		}
-		if(id == R.id.cancelarRegistro){
-			desRegistrar();
+		if (id == R.id.cancelarRegistro) {
+		//	cancelarRegistroGCM();
+			//unregister();
+			limparDados();
 			Mensagem("Atenção", "Registro Cancelado!");
-		}		
+			
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -98,6 +96,7 @@ public class RegistrarActivity extends Activity {
 			return rootView;
 		}
 	}
+
 	public void onClick(View v) {
 		// Mensagem("Olá", "Estou testando o click");
 		EditText edt = (EditText) findViewById(R.id.edtReg);
@@ -126,10 +125,11 @@ public class RegistrarActivity extends Activity {
 		// / else if (v.getId() == R.id.btnDesregistrar) {
 		// Mensagem("Atenção", "Vou desregistrar");
 		// }
-		
+
 		edt.setText(regid);
-	}	
-	private void desRegistrar() {
+	}
+
+	private void cancelarRegistroGCM() {
 
 		if (gcm == null) {
 			gcm = GoogleCloudMessaging.getInstance(context);
@@ -137,22 +137,22 @@ public class RegistrarActivity extends Activity {
 		try {
 			Log.e("EURISMAR", "VOU DESREGISTRAR");
 			gcm.unregister();
-			
-			
+
 			Log.e("EURISMAR", "DESREGISTROU");
-			
-			final SharedPreferences prefs = getGCMPreferences(context);						
-			SharedPreferences.Editor editor = prefs.edit();
-			editor.clear();
-			editor.commit();			
-			
-			Log.e("EURISMAR", "APAGOU O CACHE");					
-			
+
+			//final SharedPreferences prefs = getGCMPreferences(context);
+			//SharedPreferences.Editor editor = prefs.edit();
+			//editor.clear();
+			//editor.commit();
+
+			Log.e("EURISMAR", "APAGOU O CACHE");
+
 		} catch (IOException e) {
 
 			Mensagem("Erro", e.getMessage());
 		}
 	}
+
 	public void Mensagem(String titulo, String texto) {
 		AlertDialog.Builder mensagem = new AlertDialog.Builder(this);
 		mensagem.setTitle(titulo);
@@ -160,6 +160,7 @@ public class RegistrarActivity extends Activity {
 		mensagem.setNeutralButton("OK", null);
 		mensagem.show();
 	}
+
 	private void registerInBackground() {
 		new AsyncTask<Void, Void, String>() {
 			@Override
@@ -190,6 +191,10 @@ public class RegistrarActivity extends Activity {
 				Toast.makeText(getApplicationContext(),
 						"Registered with GCM Server." + regid,
 						Toast.LENGTH_LONG).show();
+				
+				EditText edt = (EditText) findViewById(R.id.edtReg);
+				edt.setText(regid);				
+				
 
 			}
 		}.execute(null, null, null);
@@ -223,7 +228,7 @@ public class RegistrarActivity extends Activity {
 		return getSharedPreferences(MainActivity.class.getSimpleName(),
 				Context.MODE_PRIVATE);
 	}
-	
+
 	private String getRegistrationId(Context context) {
 		final SharedPreferences prefs = getGCMPreferences(context);
 		String registrationId = prefs.getString(PROPERTY_REG_ID, "");
@@ -241,8 +246,10 @@ public class RegistrarActivity extends Activity {
 			Log.i(TAG, "App version changed.");
 			return "";
 		}
+		Log.i("REGISTRO ARMAZENADO", registrationId);
 		return registrationId;
 	}
+
 	private boolean checkPlayServices() {
 		int resultCode = GooglePlayServicesUtil
 				.isGooglePlayServicesAvailable(this);
@@ -257,5 +264,45 @@ public class RegistrarActivity extends Activity {
 			return false;
 		}
 		return true;
+	}
+
+	private void unregister() {
+
+		new AsyncTask<Void, Void, String>() {
+			@Override
+			protected String doInBackground(Void... params) {
+				String msg = "";
+				try {
+					// Bundle data = new Bundle();
+					// data.putString("action",
+					// "com.antoinecampbell.gcmdemo.UNREGISTER");
+					// String id = Integer.toString(msgId.incrementAndGet());
+					// gcm.send(SENDER_ID + "@gcm.googleapis.com", id,
+					// Globals.GCM_TIME_TO_LIVE, data);
+					// msg = "Sent unregistration";
+					if (gcm == null) {
+						gcm = GoogleCloudMessaging.getInstance(context);
+					}			
+					Log.i("EURISMAR", "AKI VAI CANCELAR O REGISTRO GCM");
+					gcm.unregister();
+					Log.i("EURISMAR", "ACABOU DE CANCELAR");
+				} catch (IOException ex) {
+					msg = "Error :" + ex.getMessage();
+				}
+				return msg;
+			}
+
+			@Override
+			protected void onPostExecute(String msg) {
+				limparDados();
+			}
+		}.execute();
+	}
+	private void limparDados(){
+		final SharedPreferences prefs = getGCMPreferences(context);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.clear();
+		editor.commit();
+		Mensagem("Atenção", "DADOS FORMA LIMPADOS!");
 	}
 }

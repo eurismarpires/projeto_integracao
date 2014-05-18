@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.clientgcmintegracao"
+    package="com.eurismar.clientgcmintegracao"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -41,11 +41,15 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-        <activity
-            android:name="com.eurismar.clientgcmintegracao.RegistrarActivity"
-            android:label="@string/title_activity_registrar" >
-        </activity>
+        <receiver
+            android:name=".GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.example.gcm" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".GcmIntentService" />
     </application>
 
 </manifest>
