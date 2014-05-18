@@ -3,6 +3,8 @@
     tools:context="com.example.clientgcmintegracao.RegistrarActivity" >
 
     
-    <item android:id="@+id/menuPrincipal" android:title="@string/menuPrincipal"></item><item android:id="@+id/action_settings" android:orderInCategory="100" android:showAsAction="never" android:title="@string/action_settings" />
+    <item android:id="@+id/menuPrincipal" android:title="@string/menuPrincipal"></item>
+    <item android:id="@+id/action_settings" android:orderInCategory="100" android:showAsAction="never" android:title="@string/action_settings" />
+    <item android:id="@+id/cancelarRegistro" android:title="@string/cancelarRegistro"></item>s
 
 </menu>

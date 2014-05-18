@@ -60,6 +60,7 @@ int drawable ic_plusone_standard_off_client 0x7f02001b
 int drawable ic_plusone_tall_off_client 0x7f02001c
 int id action_settings 0x7f05000c
 int id btnRegistrar 0x7f050006
+int id cancelarRegistro 0x7f05000d
 int id container 0x7f050005
 int id edtReg 0x7f050008
 int id fechar 0x7f05000a
