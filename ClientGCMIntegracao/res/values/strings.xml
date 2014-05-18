@@ -3,6 +3,11 @@
 
     <string name="app_name">ClientGCMIntegracao</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Configurações</string>
+    <string name="title_activity_registrar">RegistrarActivity</string>
+    <string name="registrar">Registrar</string>
+    <string name="fechar">Fechar</string>
+    <string name="cancelarRegistro">Cancelar Registro</string>
+    <string name="menuPrincipal">Menu Principal</string>
 
 </resources>
