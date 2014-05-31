@@ -71,11 +71,7 @@ public class RegistrarActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.cancelarRegistro) {
-		//	cancelarRegistroGCM();
-			//unregister();
-			limparDados();
-			Mensagem("Atenção", "Registro Cancelado!");
-			
+			cancelarRegistroGCM();			
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -129,30 +125,6 @@ public class RegistrarActivity extends Activity {
 		edt.setText(regid);
 	}
 
-	private void cancelarRegistroGCM() {
-
-		if (gcm == null) {
-			gcm = GoogleCloudMessaging.getInstance(context);
-		}
-		try {
-			Log.e("EURISMAR", "VOU DESREGISTRAR");
-			gcm.unregister();
-
-			Log.e("EURISMAR", "DESREGISTROU");
-
-			//final SharedPreferences prefs = getGCMPreferences(context);
-			//SharedPreferences.Editor editor = prefs.edit();
-			//editor.clear();
-			//editor.commit();
-
-			Log.e("EURISMAR", "APAGOU O CACHE");
-
-		} catch (IOException e) {
-
-			Mensagem("Erro", e.getMessage());
-		}
-	}
-
 	public void Mensagem(String titulo, String texto) {
 		AlertDialog.Builder mensagem = new AlertDialog.Builder(this);
 		mensagem.setTitle(titulo);
@@ -173,7 +145,7 @@ public class RegistrarActivity extends Activity {
 
 					regid = gcm.register(SENDER_ID);
 
-					Log.d("RegisterActivity", "registerInBackground - regId: "
+					Log.d("EURISMAR", "registerInBackground - regId: "
 							+ regid);
 					msg = "Device registered, registration ID=" + regid;
 
@@ -193,6 +165,8 @@ public class RegistrarActivity extends Activity {
 						Toast.LENGTH_LONG).show();
 				
 				EditText edt = (EditText) findViewById(R.id.edtReg);
+				Log.i("REGISTRO", regid);
+				Log.i("MSG", msg);
 				edt.setText(regid);				
 				
 
@@ -244,7 +218,7 @@ public class RegistrarActivity extends Activity {
 		int currentVersion = getAppVersion(context);
 		if (registeredVersion != currentVersion) {
 			Log.i(TAG, "App version changed.");
-			return "";
+			return null;
 		}
 		Log.i("REGISTRO ARMAZENADO", registrationId);
 		return registrationId;
@@ -266,7 +240,7 @@ public class RegistrarActivity extends Activity {
 		return true;
 	}
 
-	private void unregister() {
+	private void cancelarRegistroGCM() {
 
 		new AsyncTask<Void, Void, String>() {
 			@Override
@@ -303,6 +277,8 @@ public class RegistrarActivity extends Activity {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.clear();
 		editor.commit();
-		Mensagem("Atenção", "DADOS FORMA LIMPADOS!");
+		EditText edt = (EditText) findViewById(R.id.edtReg);
+		edt.setText("");
+		Mensagem("Atenção", "DADOS DO REGISTRO FORAM LIMPADOS!");
 	}
 }

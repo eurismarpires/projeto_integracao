@@ -67,5 +67,12 @@ public class MainActivity extends Activity {
 			return rootView;
 		}
 	}
+   public void onClick(){
+	   	   
+	   
+   }
+   
+   
+   
 
 }
