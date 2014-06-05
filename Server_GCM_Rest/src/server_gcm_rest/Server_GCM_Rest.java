@@ -22,9 +22,8 @@ import java.util.Date;
  */
 public class Server_GCM_Rest {
 
-    // Variável com o ID do dispositivo registrado no GCM
-    private static final String ID_DISPOSITIVO_GCM = "APA91bGR2Y2i1YxPURZTiH7iMMWD1acwK5bAyDN6fWMBYg5oGW34Bo5zlqnmAMqdmZT3FsqPDosOesdYaWylRiBHYP4KcTFfqTuSCeZoVSLBvYUmDz-m1GL26BV4CbFxddkcBsPjCOCZlotUmw0HS7b1fcX3DtbQkA";
-    // Variável com a chave obtida em API ACCESS no Google APIs
+    private static final String ID_DISPOSITIVO_GCM = "APA91bGVd_Ztbihd2iNnC9drgtS-PslKKML-x1oDRJiEIDQ95UeSMid9CYMaxV7mDfSeEpqfwsAs-LoOxK-shRzoZcnq7Sw_Rf1pHJC_x2rSrJp-VFg6c_CgTNwf6A1A9Sk2BtfHnZf5mEtbhU7Hobu3-hoIGMyyo18aS7E7_UuB4glLbeXdZsA";
+// Variável com a chave obtida em API ACCESS no Google APIs
     private static final String API_KEY = "AIzaSyAuMLK2n1TQto8xmnSgMtX1ldBvGjdC4X0";
 
     public static void main(String[] args) throws MalformedURLException, IOException {
@@ -36,18 +35,14 @@ public class Server_GCM_Rest {
         conn.setDoInput(true);
         conn.setUseCaches(false);
         conn.setAllowUserInteraction(false);
-        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("Authorization", "key=AIzaSyAuMLK2n1TQto8xmnSgMtX1ldBvGjdC4X0");
         OutputStream out = conn.getOutputStream();
 
-        String data = "\"data\": {\n"
-                + "    \"Aluno\": \"Eurismar Pires Borges\",\n"
-                + "    \"Trabalho\": \"Integração\",\n"
-                + "    \"Data de envio\": \"  " + new Date() + " \"\n}";
-
-        String registration_ids = "\"registration_ids\": [\" " + ID_DISPOSITIVO_GCM + "\"]";
-        String body = "{" + data + "," + registration_ids + "}";
-
+        String dados = "data.nome=Eurismar Pires Borges&data.mensagem=teste mensagem&data.hoje="+new Date();
+        
+        String registration_id = "registration_id="+ID_DISPOSITIVO_GCM;              
+        String body = dados + "&" + registration_id;
         System.out.println(body);
         Writer writer = new OutputStreamWriter(out, "UTF-8");
         writer.write(body);
@@ -67,8 +62,8 @@ public class Server_GCM_Rest {
         rd.close();
 
         conn.disconnect();
-        
-        System.out.println(sb.toString());       
+
+        System.out.println(sb.toString());
     }
 
 }
