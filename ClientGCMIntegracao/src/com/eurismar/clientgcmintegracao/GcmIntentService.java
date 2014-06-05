@@ -19,7 +19,7 @@ public class GcmIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
-    String TAG = "Teste GCM";
+    String TAG = "Teste RECEBIMENTO GCM";
     public GcmIntentService() {
         super("GcmIntentService");
     }
@@ -75,9 +75,17 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        
+        Intent intent = new Intent(this,  MensagensActivity.class);
+        Bundle params = new Bundle();        
+        params.putString("msg", msg);
+        intent.putExtras(params);
+        
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
-
+        		intent, 0);
+        
+        
+        
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
         .setSmallIcon(R.drawable.ic_launcher)
@@ -88,6 +96,8 @@ public class GcmIntentService extends IntentService {
 
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        
+        Toast.makeText(this, "Mensagem:" + msg, Toast.LENGTH_LONG).show();
     }
 
 }

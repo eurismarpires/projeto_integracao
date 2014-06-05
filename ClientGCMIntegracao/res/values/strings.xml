@@ -9,5 +9,6 @@
     <string name="fechar">Fechar</string>
     <string name="cancelarRegistro">Cancelar Registro</string>
     <string name="menuPrincipal">Menu Principal</string>
+    <string name="title_activity_mensagens">MensagensActivity</string>
 
 </resources>
