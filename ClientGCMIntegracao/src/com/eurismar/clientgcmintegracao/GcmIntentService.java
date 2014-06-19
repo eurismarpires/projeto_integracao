@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,12 +22,14 @@ public class GcmIntentService extends IntentService {
     NotificationCompat.Builder builder;
     String TAG = "GCM";
     Bundle extras;
+    Intent intentMsgActivity;
     public GcmIntentService() {
         super("GcmIntentService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+    	intentMsgActivity = new Intent(this,MensagensActivity.class);
         extras = intent.getExtras();       
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);        
         String messageType = gcm.getMessageType(intent);
@@ -40,19 +43,8 @@ public class GcmIntentService extends IntentService {
                 sendNotification("Deleted messages on server: " +
                         extras.toString());
             } else if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                for (int i=0; i<5; i++) {
-                    Log.i(TAG, "Working... " + (i+1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                    }
-                }
-                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-                // Post notification of received message.
-                sendNotification("Received: " + extras.toString());
-                Log.i(TAG, "Received: " + extras.toString());
+                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {                
+            	sendNotification("Received: " + extras.toString());             
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
@@ -62,11 +54,10 @@ public class GcmIntentService extends IntentService {
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);        
         Intent intent = new Intent(this,  MensagensActivity.class);
         Bundle params = new Bundle();        
-        params.putString("msg", msg);
-        //intent.putExtras(params);
+        params.putString("msg", msg);        
         intent.putExtras(extras);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-        		intent, 0);                 
+        		intent,Intent.FLAG_ACTIVITY_NEW_TASK);                 
         
         String mensagem = extras.getString("mensagem");
         String assunto = extras.getString("assunto");
@@ -74,10 +65,12 @@ public class GcmIntentService extends IntentService {
                 new NotificationCompat.Builder(this)
         .setSmallIcon(R.drawable.ic_launcher)
         .setContentTitle("Integração UFG")
-        .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(assunto))
-        .setContentText(mensagem);
+        .setStyle(new NotificationCompat.BigTextStyle()        
+        .bigText(mensagem))
+        .setContentText(assunto);
         
+        mBuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+        mBuilder.setAutoCancel(true);
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());               
     }
