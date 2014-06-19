@@ -31,7 +31,7 @@ public class RegistrarActivity extends Activity {
 	private static final String PROPERTY_APP_VERSION = "1";
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-	private static final String TAG = "Eurismar";
+	private static final String TAG = "GCM";
 	String SENDER_ID = "494593702108";
 	Context context;
 	GoogleCloudMessaging gcm;
@@ -50,17 +50,12 @@ public class RegistrarActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.registrar, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
@@ -76,9 +71,6 @@ public class RegistrarActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
 	public static class PlaceholderFragment extends Fragment {
 
 		public PlaceholderFragment() {
@@ -94,34 +86,23 @@ public class RegistrarActivity extends Activity {
 	}
 
 	public void onClick(View v) {
-		// Mensagem("Olá", "Estou testando o click");
 		EditText edt = (EditText) findViewById(R.id.edtReg);
 		if (v.getId() == R.id.btnRegistrar) {
-			context = getApplicationContext();
-			Log.i("Onclick", "CHEGOU AKI.........................1");
-			if (checkPlayServices()) {
-				Log.i("Onclick", "CHEGOU AKI.............................2");
-				gcm = GoogleCloudMessaging.getInstance(this);
-				Log.i("Onclick", "CHEGOU AKI.............................3");
-				regid = getRegistrationId(context);
-				Log.i("Onclick", "CHEGOU AKI.............................4");
-				if (regid.isEmpty()) {
-					Log.i("Onclick", "CHEGOU AKI.............................5");
+			context = getApplicationContext();			
+			if (checkPlayServices()) {				
+				gcm = GoogleCloudMessaging.getInstance(this);				
+				regid = getRegistrationId(context);				
+				if (regid.isEmpty()) {				
 					registerInBackground();
 					edt.setText(regid);
 				}
-			} else {
-				Log.i("Onclick", "CHEGOU AKI.............................6");
+			} else {				
 				Toast t = Toast.makeText(getApplicationContext(),
 						"Serviço Google Play não encontrado!",
 						Toast.LENGTH_LONG);
 				t.show();
 			}
-		}
-		// / else if (v.getId() == R.id.btnDesregistrar) {
-		// Mensagem("Atenção", "Vou desregistrar");
-		// }
-
+		}	
 		edt.setText(regid);
 	}
 
@@ -142,31 +123,21 @@ public class RegistrarActivity extends Activity {
 					if (gcm == null) {
 						gcm = GoogleCloudMessaging.getInstance(context);
 					}
-
 					regid = gcm.register(SENDER_ID);
-
-					Log.d("EURISMAR", "registerInBackground - regId: "
-							+ regid);
-					msg = "Device registered, registration ID=" + regid;
-
+					Log.d("GCM", "Aplicativo registrado:"+ regid);
+					msg = "Dispositivo Registrado, Registro ID=" + regid;
 					storeRegistrationId(context, regid);
 				} catch (IOException ex) {
-					msg = "Error :" + ex.getMessage();
-					Log.d("RegisterActivity", "Error: " + msg);
+					msg = "Erro ao registrar :" + ex.getMessage();					
 				}
-				Log.d("RegisterActivity", "AsyncTask completed: " + msg);
 				return msg;
 			}
 
 			@Override
 			protected void onPostExecute(String msg) {
 				Toast.makeText(getApplicationContext(),
-						"Registered with GCM Server." + regid,
-						Toast.LENGTH_LONG).show();
-				
-				EditText edt = (EditText) findViewById(R.id.edtReg);
-				Log.i("REGISTRO", regid);
-				Log.i("MSG", msg);
+						"Registro" + regid,Toast.LENGTH_LONG).show();				
+				EditText edt = (EditText) findViewById(R.id.edtReg);				
 				edt.setText(regid);				
 				
 
@@ -189,16 +160,12 @@ public class RegistrarActivity extends Activity {
 			PackageInfo packageInfo = context.getPackageManager()
 					.getPackageInfo(context.getPackageName(), 0);
 			return packageInfo.versionCode;
-		} catch (NameNotFoundException e) {
-			// should never happen
+		} catch (NameNotFoundException e) {		
 			throw new RuntimeException("Could not get package name: " + e);
 		}
 	}
 
 	private SharedPreferences getGCMPreferences(Context context) {
-		// This sample app persists the registration ID in shared preferences,
-		// but
-		// how you store the regID in your app is up to you.
 		return getSharedPreferences(MainActivity.class.getSimpleName(),
 				Context.MODE_PRIVATE);
 	}
@@ -207,20 +174,16 @@ public class RegistrarActivity extends Activity {
 		final SharedPreferences prefs = getGCMPreferences(context);
 		String registrationId = prefs.getString(PROPERTY_REG_ID, "");
 		if (registrationId.isEmpty()) {
-			Log.i(TAG, "Registration not found.");
+			Log.i(TAG, "Registro não encontrado");
 			return "";
 		}
-		// Check if app was updated; if so, it must clear the registration ID
-		// since the existing regID is not guaranteed to work with the new
-		// app version.
 		int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION,
 				Integer.MIN_VALUE);
 		int currentVersion = getAppVersion(context);
-		if (registeredVersion != currentVersion) {
-			Log.i(TAG, "App version changed.");
+		if (registeredVersion != currentVersion) {			
 			return null;
 		}
-		Log.i("REGISTRO ARMAZENADO", registrationId);
+		Log.i(TAG, registrationId);
 		return registrationId;
 	}
 
@@ -232,7 +195,7 @@ public class RegistrarActivity extends Activity {
 				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
 						PLAY_SERVICES_RESOLUTION_REQUEST).show();
 			} else {
-				Log.i(TAG, "This device is not supported.");
+				Log.i(TAG, "Dispositivo não suportado");
 				finish();
 			}
 			return false;
@@ -247,21 +210,14 @@ public class RegistrarActivity extends Activity {
 			protected String doInBackground(Void... params) {
 				String msg = "";
 				try {
-					// Bundle data = new Bundle();
-					// data.putString("action",
-					// "com.antoinecampbell.gcmdemo.UNREGISTER");
-					// String id = Integer.toString(msgId.incrementAndGet());
-					// gcm.send(SENDER_ID + "@gcm.googleapis.com", id,
-					// Globals.GCM_TIME_TO_LIVE, data);
-					// msg = "Sent unregistration";
 					if (gcm == null) {
 						gcm = GoogleCloudMessaging.getInstance(context);
 					}			
-					Log.i("EURISMAR", "AKI VAI CANCELAR O REGISTRO GCM");
+					Log.i(TAG, "AKI VAI CANCELAR O REGISTRO GCM");
 					gcm.unregister();
-					Log.i("EURISMAR", "ACABOU DE CANCELAR");
+					Log.i(TAG, "ACABOU DE CANCELAR");
 				} catch (IOException ex) {
-					msg = "Error :" + ex.getMessage();
+					msg = "Erro" + ex.getMessage();
 				}
 				return msg;
 			}

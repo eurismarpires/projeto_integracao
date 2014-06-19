@@ -1,5 +1,7 @@
 package com.eurismar.clientgcmintegracao;
 
+
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -18,16 +20,14 @@ public class MensagensActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_mensagens);
-		TextView tv = (TextView)findViewById(R.id.txtMensagem);
-		Intent it = getIntent();
-		Bundle params = it.getExtras();
-		String mensagem = "";
-		if(params != null)
-			mensagem = params.getString("msg");
-		else
-			mensagem = params.getString("Nenhuma mensagem recebida!");
-		tv.setText(mensagem);
+		setContentView(R.layout.activity_mensagens);				
+		Intent intent = getIntent();
+		TextView tvAssunto = (TextView) findViewById(R.id.tvAssunto);
+		TextView tvAutor = (TextView) findViewById(R.id.tvAutor);
+		TextView tvMensagem = (TextView) findViewById(R.id.tvMsg);
+		tvAssunto.setText(intent.getStringExtra("assunto"));
+		tvAutor.setText(intent.getStringExtra("autor"));
+		tvMensagem.setText(intent.getStringExtra("mensagem"));		
 
 	}
 
