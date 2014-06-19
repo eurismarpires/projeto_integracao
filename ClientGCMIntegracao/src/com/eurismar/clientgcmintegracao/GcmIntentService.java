@@ -79,9 +79,7 @@ public class GcmIntentService extends IntentService {
         .setContentText(mensagem);
         
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-        
-        Toast.makeText(this, "Mensagem:" + msg, Toast.LENGTH_LONG).show();
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());               
     }
 
 }
