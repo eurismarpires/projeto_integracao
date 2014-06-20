@@ -17,28 +17,25 @@
         android:layout_alignParentLeft="true"
         android:orientation="vertical" >
 
+        <EditText
+            android:id="@+id/edtUSuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="usuário ou email" />
+
         <Button
             android:id="@+id/btnRegistrar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/registrar"
-            android:onClick="onClick" />
-        
-     <TextView
-            android:id="@+id/txtRetorno"
+            android:onClick="onClick"
+            android:text="Enviar" />
+
+        <TextView
+            android:id="@+id/txtInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Retorno" />        
-        <EditText
-            android:id="@+id/edtReg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10" >
-
-            <requestFocus />
-        </EditText>
-
-   
+            android:text="TextView" />
 
     </LinearLayout>    
     

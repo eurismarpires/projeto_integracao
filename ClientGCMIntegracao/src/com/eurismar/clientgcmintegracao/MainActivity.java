@@ -10,20 +10,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class MainActivity extends Activity {
-
+	Button btnRegistrar;
+	Button btnFechar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, new PlaceholderFragment()).commit();			
 		}
 	}
 
+	public void registrar(View v){
+		Intent intent = new Intent(this, RegistrarActivity.class);
+		startActivity(intent);		
+	}
+	public void fechar(View v){
+		finish();
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -35,11 +45,10 @@ public class MainActivity extends Activity {
 		int id = item.getItemId();
 		if (id == R.id.registrar) {
 			Intent intent = new Intent(this, RegistrarActivity.class);
-			startActivity(intent);
+			startActivity(intent);					
 			return true;
 		}
-		if(id == R.id.fechar){
-			Log.i("EURISMAR", "VOU FECHAR A APLICAÇÃO");
+		if(id == R.id.fechar){			
 			finish();
 			return true;
 		}
@@ -62,9 +71,6 @@ public class MainActivity extends Activity {
 			return rootView;
 		}
 	}
-   public void onClick(){
-	   	   
-	   
-   }
+
 
 }

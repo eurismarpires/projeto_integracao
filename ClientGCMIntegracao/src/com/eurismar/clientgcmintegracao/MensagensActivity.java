@@ -29,28 +29,12 @@ public class MensagensActivity extends Activity {
 					finish();					
 				
 			}
-		});
-		
-		btnAtualizar = (Button)findViewById(R.id.btnAtualizar);
-		btnAtualizar.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				atualizaDadosMensagem();
-				
-			}
-		});
+		});		
 	}
 	
 	@Override
 	protected void onStart() {	   
 		super.onStart();
-		atualizaDadosMensagem();
-	}
-
-	@Override
-	protected void onRestart() {		
-		super.onRestart();
 		atualizaDadosMensagem();
 	}
 

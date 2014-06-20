@@ -1,5 +1,7 @@
 package com.eurismar.clientgcmintegracao;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
@@ -12,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -85,16 +89,14 @@ public class RegistrarActivity extends Activity {
 		}
 	}
 
-	public void onClick(View v) {
-		EditText edt = (EditText) findViewById(R.id.edtReg);
+	public void onClick(View v) {		
 		if (v.getId() == R.id.btnRegistrar) {
 			context = getApplicationContext();			
 			if (checkPlayServices()) {				
 				gcm = GoogleCloudMessaging.getInstance(this);				
 				regid = getRegistrationId(context);				
 				if (regid.isEmpty()) {				
-					registerInBackground();
-					edt.setText(regid);
+					registerInBackground();					
 				}
 			} else {				
 				Toast t = Toast.makeText(getApplicationContext(),
@@ -102,8 +104,8 @@ public class RegistrarActivity extends Activity {
 						Toast.LENGTH_LONG);
 				t.show();
 			}
-		}	
-		edt.setText(regid);
+		}			
+		gravarDadosEmTxt(regid);
 	}
 
 	public void Mensagem(String titulo, String texto) {
@@ -134,12 +136,9 @@ public class RegistrarActivity extends Activity {
 			}
 
 			@Override
-			protected void onPostExecute(String msg) {
-				Toast.makeText(getApplicationContext(),
-						"Registro" + regid,Toast.LENGTH_LONG).show();				
-				EditText edt = (EditText) findViewById(R.id.edtReg);				
-				edt.setText(regid);				
-				
+			protected void onPostExecute(String msg) {	
+				Log.i(TAG, msg);	
+				gravarDadosEmTxt(msg);
 
 			}
 		}.execute(null, null, null);
@@ -232,9 +231,44 @@ public class RegistrarActivity extends Activity {
 		final SharedPreferences prefs = getGCMPreferences(context);
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.clear();
-		editor.commit();
-		EditText edt = (EditText) findViewById(R.id.edtReg);
-		edt.setText("");
+		editor.commit();			
 		Mensagem("Atenção", "DADOS DO REGISTRO FORAM LIMPADOS!");
 	}
+	public void gravarDadosEmTxt(String txt){
+		EditText txtNomeArq = (EditText)findViewById(R.id.edtUSuario);
+		String lstrNomeArq;
+		File arq;
+		byte[] dados;
+		try {
+			lstrNomeArq = "gcm_config_" + txtNomeArq.getText().toString() + ".txt";
+
+			arq = new File(Environment.getExternalStorageDirectory(),
+					lstrNomeArq);
+			FileOutputStream fos;
+			fos = new FileOutputStream(arq);
+			fos.write(txt.toString().getBytes());
+			fos.flush();
+			fos.close();
+			Mensagem("Informação","Dispositivo registrado com sucesso! Leia o texto abaixo");
+		    TextView tvInfo = (TextView)findViewById(R.id.txtInfo);
+			tvInfo.setText("foi gravado o arquivo:\n" + lstrNomeArq +  "\n" 
+		    + " no diretório:\n" + Environment.getExternalStorageDirectory().toString()
+		    + "\n"
+		    + "\n"
+		    + "copie este arquivo e cole em um diretório no seu computador de onde será enviado a mensagem"
+		    + "\n"
+		    + "Este arquivo contém as informações necessárias para o computador saber qual dispositivo irá receber as mensagens"
+					);
+			
+			//Listar();
+		} catch (Exception e) {		
+			Mensagem("Erro ao gravar configurações", e.getMessage());
+		}		
+		
+	}
+	private String ObterDiretorio() {
+		File root = android.os.Environment.getExternalStorageDirectory();
+		return root.toString();
+	}	
+	
 }
